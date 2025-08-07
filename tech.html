@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>404:signal found</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  html, body {
+    margin:0; padding:0;
+    height:100%;
+    background:#1e0a15;
+    font-family: 'Press Start 2P', cursive;
+    color:#ff99cc;
+    overflow:hidden;
+    user-select:none;
+    cursor:none;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+  }
+
+  #main-header {
+    font-size: 3vw;
+    letter-spacing: 0.1em;
+    animation: flicker 3s infinite;
+    text-shadow:
+      0 0 6px #ff5c9e,
+      0 0 12px #ff5c9e,
+      0 0 18px #ff5c9e;
+    user-select:none;
+    cursor: default;
+    position: relative;
+  }
+
+  @keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+      text-shadow:
+        0 0 6px #ff5c9e,
+        0 0 12px #ff5c9e,
+        0 0 18px #ff5c9e;
+      transform: translate(0,0);
+    }
+    20%, 22%, 24%, 55% {
+      opacity: 0.7;
+      text-shadow: none;
+      transform: translate(-1.5px, 1.5px);
+    }
+  }
+
+  #header-text {
+    user-select:none;
+    cursor: default;
+  }
+  #header-text span {
+    user-select:none;
+    display:inline-block;
+    position: relative;
+  }
+
+  .zero-lift {
+    animation: liftZero 0.5s forwards;
+  }
+  @keyframes liftZero {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50px); }
+  }
+
+  /* Shaking animation for 4 */
+  .shake {
+    animation: shakeAnim 0.3s;
+  }
+  @keyframes shakeAnim {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+
+  /* Blush style */
+  .blush {
+    text-shadow:
+      0 0 8px #ff77aa,
+      0 0 16px #ff66bb,
+      0 0 20px #ff66bb;
+    color: #ff66bb;
+  }
+
+  /* Demo chicken box */
+  #rubber-chicken {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  top: 65%;
+  left: 50%;
+  margin-left: -32px;
+  cursor: grab;
+  user-select: none;
+  display: none;
+  z-index: 100;
+  /* Remove background and text */
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+#rubber-chicken.dragging {
+  cursor: grabbing;
+}
+
+
+  /* Demo file boxes */
+  .file {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    background: #cc99cc;
+    border: 2px solid #aa66aa;
+    border-radius: 8px;
+    color: #330033;
+    font-size: 9px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 80px;
+    user-select:none;
+    cursor: grab;
+    box-shadow: 0 0 8px #bb77bb;
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    z-index: 200;
+  }
+  .file.dragging {
+    cursor: grabbing;
+  }
+
+  /* Easter eggs demo */
+  .easter-egg {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: #ff66cc;
+    border: 2px solid #ff44aa;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px #ff77cc;
+    user-select:none;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 48px;
+    user-select:none;
+    display:none;
+  }
+  #egg-hidden {
+    top: 20%;
+    left: 80%;
+  }
+  /* We'll position egg1 under D letter dynamically */
+
+  /* Bunny demo box */
+  #bunny {
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    background: #ff99cc;
+    border: 2px solid #ff66aa;
+    border-radius: 12px;
+    bottom: 10%;
+    left: -80px;
+    pointer-events:none;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: #660033;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    line-height: 64px;
+    user-select:none;
+  }
+  #bunny.visible {
+    opacity: 1;
+    animation: hopAcross 3s forwards;
+  }
+  @keyframes hopAcross {
+    0% { left: -80px; bottom: 10%; opacity: 1; }
+    50% { bottom: 20%; }
+    100% { left: 110%; opacity: 0; bottom: 10%; }
+  }
+
+  /* Idle popup */
+  #idle-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #000c;
+    border: 2px solid #ff77aa;
+    border-radius: 12px;
+    padding: 24px 32px;
+    color: #ffc0d9;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2rem;
+    text-align: center;
+    z-index: 400;
+    display: none;
+    user-select:none;
+    box-shadow: 0 0 12px #ff77aa;
+  }
+  #idle-popup button {
+    background: #ff77aa;
+    border: none;
+    margin: 12px 8px 0 8px;
+    padding: 8px 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  #idle-popup button:hover {
+    background-color: #ff3c77;
+  }
+
+  /* Fart gif demo box */
+  #fart-gif {
+    position: fixed;
+    width: 150px;
+    height: 150px;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    z-index: 500;
+    display: none;
+    user-select:none;
+    background: #ff99cc;
+    border-radius: 16px;
+    border: 2px solid #ff4477;
+    color: #660033;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 150px;
+    text-align: center;
+  }
+
+  /* Sparkly cursor */
+  #cursor {
+    position: fixed;
+    pointer-events: none;
+    width: 24px; height: 24px;
+    background:
+      radial-gradient(circle at 50% 50%, #ffc0d9 3px, transparent 4px),
+      radial-gradient(circle at 8px 8px, #ff9ed9 3px, transparent 4px),
+      radial-gradient(circle at 16px 16px, #ffaadd 3px, transparent 4px);
+    background-repeat: no-repeat;
+    animation: sparkle 1.2s linear infinite;
+    z-index: 9999;
+    mix-blend-mode: screen;
+  }
+  @keyframes sparkle {
+    0%, 100% { filter: brightness(1) saturate(1); }
+    50% { filter: brightness(1.7) saturate(1.5); }
+  }
+</style>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+
+<h1 id="main-header" aria-label="404 signal found">
+  <span id="header-text">
+    <span>4</span><span>0</span><span>4</span><span>:</span><span>s</span><span>i</span><span>g</span><span>n</span><span>a</span><span>l</span><span>f</span><span>o</span><span>u</span><span>n</span><span>d</span>
+  </span>
+</h1>
+
+<!-- Rubber chicken demo box -->
+<div id="rubber-chicken" draggable="false" aria-label="Rubber Chicken">
+  <img src="rubber-chicken.png" alt="Rubber Chicken" style="width: 64px; height: 64px; image-rendering: pixelated; user-select:none; pointer-events:none;" />
+</div>
+
+<!-- Easter eggs -->
+<div id="egg-bunny-hidden" class="easter-egg" title="???" style="top: 70%; left: 18%; width: 32px; height: 32px; display: none; background: none; border: none; box-shadow: none;">
+  <img src="easter-egg-a.png" alt="Hidden Bunny Egg" style="width: 100%; height: 100%; border-radius: 50%; pointer-events: none;" />
+</div>
+<div id="egg-under-d" class="easter-egg" title="Easter Egg">EGG 1</div>
+
+<!-- Bunny demo -->
+<div id="bunny" aria-hidden="true">BUNNY</div>
+
+<!-- Idle popup -->
+<div id="idle-popup" role="dialog" aria-modal="true" aria-labelledby="idle-popup-msg">
+  <div id="idle-popup-msg">Are you lost?</div>
+  <button id="btn-yes">yes</button>
+  <button id="btn-also-yes">also yes</button>
+</div>
+
+<!-- Fart gif demo box -->
+<div id="fart-gif">FART GIF</div>
+
+<!-- Sparkly cursor -->
+<div id="cursor"></div>
+
+<script>
+  const headerText = document.getElementById('header-text');
+  const zeroSpan = headerText.children[1]; // '0'
+  const chicken = document.getElementById('rubber-chicken');
+  const bunny = document.getElementById('bunny');
+  const eggBehind = document.getElementById('egg-behind-sign');
+  const eggUnderD = document.getElementById('egg-under-d');
+  const idlePopup = document.getElementById('idle-popup');
+  const btnYes = document.getElementById('btn-yes');
+  const btnAlsoYes = document.getElementById('btn-also-yes');
+  const fartGif = document.getElementById('fart-gif');
+  const cursor = document.getElementById('cursor');
+
+  // State
+  let analSequence = ['a','n','a','l'];
+  let analIndex = 0;
+  let chickenAcquired = false;
+  let hitCount = 0;
+  let blushState = false;
+  let filesUnlocked = 0;
+  const maxFiles = 5;
+  let easterEggCount = Number(localStorage.getItem('eggCount')) || 0;
+  let dClickCount = 0;
+  let bunnyShown = false;
+  let idleTimer = null;
+  let idlePopupShown = false;
+  let hitTimeout = null;
+
+  // Secret files info
+  const secretFiles = [
+    {id: 'file1', label:'FILE 1', link:'secret1.html'},
+    {id: 'file2', label:'FILE 2', link:'secret2.html'},
+    {id: 'file3', label:'FILE 3', link:'secret3.html'},
+    {id: 'file4', label:'FILE 4', link:'secret4.html'},
+    {id: 'file5', label:'FILE 5', link:'index.html'}
+  ];
+
+  // Bunny hop sound (public domain)
+  const bunnySoundUrl = 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_8a35ebf9ab.mp3?filename=bunny-hop-4939.mp3';
+
+  // Place egg under D letter and hide initially
+  function positionEggUnderD(){
+    const dSpan = Array.from(headerText.children).find(s => s.textContent.toLowerCase() === 'd');
+    if(!dSpan) return;
+    const rect = dSpan.getBoundingClientRect();
+    // Position eggUnderD absolutely relative to viewport
+    eggUnderD.style.left = (rect.left + rect.width/2 - 24) + 'px'; // center egg (48px wide)
+    eggUnderD.style.top = (rect.bottom + 4) + 'px'; // just below letter
+    eggUnderD.style.display = 'none';
+  }
+  positionEggUnderD();
+  window.addEventListener('resize', positionEggUnderD);
+
+  // Cursor movement
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = (e.clientX - 12) + 'px';
+    cursor.style.top = (e.clientY - 12) + 'px';
+  });
+
+  // Letter sequence detection (a,n,a,l)
+  headerText.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', e => {
+      const letter = span.textContent.toLowerCase();
+      if(letter === analSequence[analIndex]){
+        analIndex++;
+        if(analIndex === analSequence.length){
+          if(!chickenAcquired) revealChicken();
+          analIndex = 0;
+        }
+      } else {
+        analIndex = 0;
+      }
+    });
+  });
+
+  // Reveal chicken & lift zero
+  function revealChicken(){
+    chickenAcquired = true;
+    zeroSpan.classList.add('zero-lift');
+    chicken.style.display = 'block';
+    chicken.style.left = '50%';
+    chicken.style.top = '65%';
+    initChickenDrag();
+  }
+
+  // Drag & drop chicken + hit detection for 4s
+  function initChickenDrag(){
+    let offsetX, offsetY, dragging = false;
+
+    chicken.addEventListener('mousedown', e => {
+      dragging = true;
+      chicken.classList.add('dragging');
+      offsetX = e.clientX - chicken.getBoundingClientRect().left;
+      offsetY = e.clientY - chicken.getBoundingClientRect().top;
+      e.preventDefault();
+    });
+    window.addEventListener('mouseup', e => {
+      if(!dragging) return;
+      dragging = false;
+      chicken.classList.remove('dragging');
+    });
+    window.addEventListener('mousemove', e => {
+      if(!dragging) return;
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+      x = Math.min(window.innerWidth - chicken.offsetWidth, Math.max(0, x));
+      y = Math.min(window.innerHeight - chicken.offsetHeight, Math.max(0, y));
+      chicken.style.left = x + 'px';
+      chicken.style.top = y + 'px';
+
+      // Check collision with 4 spans
+      checkChickenHits();
+    });
+  }
+
+  // Check collision between chicken and each "4" span
+  function checkChickenHits(){
+    if(!chickenAcquired) return;
+
+    const chickenRect = chicken.getBoundingClientRect();
+    const fours = Array.from(headerText.children).filter(span => span.textContent === '4');
+
+    let hitOccurred = false;
+    fours.forEach(fourSpan => {
+      const rect = fourSpan.getBoundingClientRect();
+      if(rectIntersect(chickenRect, rect)){
+        hitOccurred = true;
+        triggerHit(fourSpan);
+      }
+    });
+    if(!hitOccurred){
+      // Reset blush fade timer if needed
+      if(hitTimeout){
+        clearTimeout(hitTimeout);
+        hitTimeout = null;
+      }
+      if(blushState){
+        fadeBlush();
+      }
+    }
+  }
+
+  // Rectangle intersection helper
+  function rectIntersect(r1, r2){
+    return !(r2.left > r1.right ||
+      r2.right < r1.left ||
+      r2.top > r1.bottom ||
+      r2.bottom < r1.top);
+  }
+
+  // Trigger hit animation and progress
+  function triggerHit(fourSpan){
+    if(fourSpan.classList.contains('shake')) return; // prevent rapid retrigger
+
+    fourSpan.classList.add('shake');
+    setTimeout(() => fourSpan.classList.remove('shake'), 300);
+
+    hitCount++;
+    if(hitCount % 5 === 0){
+      setBlush(true);
+    } else {
+      // Start fade blush timeout
+      if(hitTimeout) clearTimeout(hitTimeout);
+      hitTimeout = setTimeout(() => {
+        fadeBlush();
+      }, 1500);
+    }
+
+    // Unlock files every 20 hits
+    if(hitCount % 20 === 0 && filesUnlocked < maxFiles){
+      unlockFile(filesUnlocked);
+      filesUnlocked++;
+    }
+  }
+
+  function setBlush(on){
+    blushState = on;
+    const fours = Array.from(headerText.children).filter(span => span.textContent === '4');
+    fours.forEach(span => {
+      if(on) span.classList.add('blush');
+      else span.classList.remove('blush');
+    });
+  }
+
+  function fadeBlush(){
+    setBlush(false);
+  }
+
+  // Unlock & animate file demo boxes
+  function unlockFile(index){
+    if(index >= secretFiles.length) return;
+    let file = document.getElementById(secretFiles[index].id);
+    if(!file){
+      file = document.createElement('a');
+      file.id = secretFiles[index].id;
+      file.href = secretFiles[index].link;
+      file.target = '_blank';
+      file.className = 'file';
+      file.textContent = secretFiles[index].label;
+      file.style.left = (100 + index * 90) + 'px';
+      file.style.top = (window.innerHeight - 120) + 'px';
+      file.style.opacity = '1';
+      file.style.transform = 'scale(1)';
+      document.body.appendChild(file);
+
+      initDragElement(file);
+    }
+  }
+
+  // Make file draggable
+  function initDragElement(el){
+    let offsetX, offsetY, dragging = false;
+
+    el.addEventListener('mousedown', e => {
+      dragging = true;
+      el.classList.add('dragging');
+      offsetX = e.clientX - el.getBoundingClientRect().left;
+      offsetY = e.clientY - el.getBoundingClientRect().top;
+      e.preventDefault();
+    });
+    window.addEventListener('mouseup', e => {
+      if(!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+    });
+    window.addEventListener('mousemove', e => {
+      if(!dragging) return;
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+      x = Math.min(window.innerWidth - el.offsetWidth, Math.max(0, x));
+      y = Math.min(window.innerHeight - el.offsetHeight, Math.max(0, y));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    });
+  }
+
+  // Easter eggs
+  eggBehind.style.display = 'block';
+  eggBehind.style.left = '5%';
+  eggBehind.style.top = '30%';
+
+  eggUnderD.style.display = 'none';
+
+  eggBehind.addEventListener('click', () => {
+    incrementEggCount();
+    eggBehind.style.display = 'none';
+  });
+
+  eggUnderD.addEventListener('click', () => {
+    incrementEggCount();
+    eggUnderD.style.display = 'none';
+  });
+
+  // Click "d" letter to increment dClickCount
+  const dSpan = Array.from(headerText.children).find(s => s.textContent.toLowerCase() === 'd');
+  if(dSpan){
+    dSpan.style.cursor = 'default';
+    dSpan.addEventListener('click', () => {
+      dClickCount++;
+      if(dClickCount === 10){
+        // Reveal eggUnderD and show bunny
+        eggUnderD.style.display = 'block';
+        showBunny();
+        dClickCount = 0;
+      }
+    });
+  }
+
+  // Bunny animation and sound
+  async function showBunny(){
+    if(bunnyShown) return;
+    bunnyShown = true;
+    incrementEggCount();
+    bunny.classList.add('visible');
+    const audio = new Audio(bunnySoundUrl);
+    try { await audio.play(); } catch(e){}
+    setTimeout(() => {
+      bunny.classList.remove('visible');
+    }, 3000);
+  }
+
+  // Increment easter egg count and save
+  function incrementEggCount(){
+    easterEggCount++;
+    localStorage.setItem('eggCount', easterEggCount);
+    console.log('Easter eggs found:', easterEggCount);
+  }
+
+  // Idle timer surprise
+  function resetIdleTimer(){
+    if(idlePopupShown) return;
+    if(idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(showIdlePopup, 5 * 60 * 1000);
+  }
+
+  function showIdlePopup(){
+    if(localStorage.getItem('idleShown')) return;
+    idlePopupShown = true;
+    idlePopup.style.display = 'block';
+    localStorage.setItem('idleShown', 'true');
+  }
+
+  btnYes.onclick = btnAlsoYes.onclick = () => {
+    idlePopup.style.display = 'none';
+    playFartGif();
+  };
+
+  // Play fart gif for 3 seconds (demo placeholder)
+  function playFartGif(){
+    fartGif.style.display = 'block';
+    setTimeout(() => {
+      fartGif.style.display = 'none';
+    }, 3000);
+  }
+
+  // Reset idle timer on activity
+  ['mousemove','keydown','mousedown','touchstart'].forEach(evt => {
+    document.addEventListener(evt, resetIdleTimer);
+  });
+  resetIdleTimer();
+
+  // Spark particles effect
+  const sparkCount = 40;
+  const sparks = [];
+
+  function createSpark(){
+    const spark = document.createElement('div');
+    spark.style.position = 'fixed';
+    spark.style.width = '5px';
+    spark.style.height = '5px';
+    spark.style.background = 'radial-gradient(circle, #ff99cc 60%, transparent 100%)';
+    spark.style.borderRadius = '50%';
+    spark.style.pointerEvents = 'none';
+    spark.style.opacity = Math.random()*0.6 + 0.3;
+    spark.style.zIndex = 10;
+    document.body.appendChild(spark);
+    return {
+      el: spark,
+      x: Math.random()*window.innerWidth,
+      y: Math.random()*window.innerHeight,
+      vx: (Math.random()-0.5)*0.2,
+      vy: (Math.random()-0.5)*0.2,
+      life: Math.random()*100 + 100,
+    };
+  }
+
+  for(let i=0; i<sparkCount; i++){
+    sparks.push(createSpark());
+  }
+
+  function updateSparks(){
+    sparks.forEach(spark => {
+      spark.x += spark.vx;
+      spark.y += spark.vy;
+      spark.life--;
+      if(spark.x < 0) spark.x = window.innerWidth;
+      if(spark.x > window.innerWidth) spark.x = 0;
+      if(spark.y < 0) spark.y = window.innerHeight;
+      if(spark.y > window.innerHeight) spark.y = 0;
+      if(spark.life <= 0){
+        spark.life = Math.random()*100 + 100;
+        spark.x = Math.random()*window.innerWidth;
+        spark.y = Math.random()*window.innerHeight;
+      }
+      spark.el.style.left = spark.x + 'px';
+      spark.el.style.top = spark.y + 'px';
+    });
+    requestAnimationFrame(updateSparks);
+  }
+  updateSparks();
+
+</script>
+</body>
+</html>

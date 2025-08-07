@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nani Echo's Violet Riot</title>
+  <link rel="icon" type="image/x-icon" href="favicon-girl.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink-light: #ffb6d0;
+      --pink-medium: #ff6f91;
+      --pink-dark: #c43e6a;
+      --white: #fff;
+      --shadow-pink: rgba(255, 111, 145, 0.6);
+      --sparkle-color: #fff1f3;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(180deg, var(--pink-light), #fff);
+      color: var(--pink-dark);
+      overflow-x: hidden;
+      cursor: none;
+    }
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 100px;
+      background: var(--pink-medium);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      z-index: 1002;
+      box-shadow: 0 3px 15px rgba(196, 62, 106, 0.4);
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--white);
+      font-size: 2.5rem;
+      width: 75px;
+      height: 75px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: var(--pink-dark);
+      box-shadow: 0 0 15px var(--shadow-pink);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    nav a:hover {
+      transform: scale(1.3);
+      box-shadow: 0 0 25px var(--pink-light);
+    }
+    .container {
+      max-width: 1000px;
+      margin: 140px auto 3rem;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 5rem;
+      margin-bottom: 0.5rem;
+      color: var(--pink-dark);
+      text-shadow: 0 0 12px var(--pink-dark);
+    }
+    .instrument-tabs button {
+      background-color: var(--pink-medium);
+      border: none;
+      color: var(--white);
+      font-size: 1.2rem;
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .instrument-section {
+      display: none;
+      margin-top: 1.5rem;
+    }
+    .instrument-section.active {
+      display: block;
+    }
+    .album {
+      margin-top: 3rem;
+    }
+    .album h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .album img {
+      width: 200px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .album img:hover {
+      transform: scale(1.1);
+    }
+    .tracks {
+      display: none;
+      margin-top: 1rem;
+    }
+    .tracks.active {
+      display: block;
+    }
+    .track {
+      margin-bottom: 0.5rem;
+    }
+    .diary {
+      margin: 5rem auto;
+      max-width: 700px;
+      background: #fff0f6;
+      border: 2px dashed var(--pink-dark);
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: left;
+      position: relative;
+      box-shadow: 0 0 15px rgba(255, 111, 145, 0.4);
+    }
+    .diary h3 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--pink-dark);
+      margin-bottom: 1rem;
+    }
+    .lyric-selector {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .lyric-selector button {
+      margin: 0.3rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      background-color: var(--pink-light);
+      color: var(--pink-dark);
+      cursor: pointer;
+    }
+    .lyrics {
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 1rem;
+    }
+    .cursor-glow {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      background: radial-gradient(circle, var(--pink-medium) 0%, transparent 70%);
+      filter: drop-shadow(0 0 10px var(--pink-medium));
+      transform: translate(-50%, -50%);
+      z-index: 1004;
+    }
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      width: 8px;
+      height: 8px;
+      background: var(--sparkle-color);
+      border-radius: 50%;
+      filter: drop-shadow(0 0 3px var(--white));
+      opacity: 0;
+      animation: sparkleAnim 1500ms linear forwards;
+      z-index: 1005;
+      mix-blend-mode: screen;
+    }
+    @keyframes sparkleAnim {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(15px, -30px) scale(0.3); }
+    }
+    .collapse-button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 10px 0;
+  background-color: #ffe6f0;
+  color: #cc3366;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  border: 2px solid #cc3366;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.collapse-button:hover {
+  background-color: #ffd4e6;
+  color: #b32759;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+h1 {
+  animation: bounceIn 1s ease-out;
+}
+@keyframes sparklePulse {
+  0% {
+    box-shadow: 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 15px var(--pink-light);
+  }
+  100% {
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+.instrument-tabs button:hover,
+.lyric-selector button:hover {
+  animation: sparklePulse 0.5s ease;
+}
+@keyframes floatHearts {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.5);
+    opacity: 0;
+  }
+}
+.floating-heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 1.5rem;
+  color: #ff6f91;
+  opacity: 0;
+  animation: floatHearts 4s ease-in forwards;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" title="Home">🏠</a>
+    <a href="art.html" title="Art">🎨</a>
+    <a href="games.html" title="Games">🎮</a>
+    <a href="tech.html" title="Tech">💻</a>
+    <a href="books.html" title="Books">📖</a>
+    <a href="cooking.html" title="Cooking">🍳</a>
+  </nav>
+  <main class="container">
+    <h1>Violet Riot</h1>
+    <div class="instrument-tabs">
+      <button onclick="showInstrument('guitar')">Guitar</button>
+      <button onclick="showInstrument('bass')">Bass</button>
+      <button onclick="showInstrument('drums')">Drums</button>
+      <button onclick="showInstrument('vocals')">Vocals</button>
+    </div>
+    <div id="guitar" class="instrument-section">
+      <div class="track">Electric Lullaby (Instrumental) <audio controls src="guitar1.mp3"></audio></div>
+      <div class="track">Rose Strings (Instrumental) <audio controls src="guitar2.mp3"></audio></div>
+    </div>
+    <div id="bass" class="instrument-section">
+      <div class="track">Deep Dive (Instrumental) <audio controls src="bass1.mp3"></audio></div>
+      <div class="track">Velvet Crunch (Instrumental) <audio controls src="bass2.mp3"></audio></div>
+    </div>
+    <div id="drums" class="instrument-section">
+      <div class="track">Skinned Knees (Instrumental) <audio controls src="drums1.mp3"></audio></div>
+      <div class="track">Broken Tempo (Instrumental) <audio controls src="drums2.mp3"></audio></div>
+    </div>
+    <div id="vocals" class="instrument-section">
+      <div class="track">Confession No. 5 (Accapela) <audio controls src="vocals1.mp3"></audio></div>
+      <div class="track">Bite Back (Accapela) <audio controls src="vocals2.mp3"></audio></div>
+    </div>
+    <div class="album">
+      <h2>Trash</h2>
+      <img src="trash-cover.jpg" onclick="toggleTracks('trashTracks')" alt="Trash Album Cover">
+      <div id="trashTracks" class="tracks">
+        <div class="track">Gum on my Heel <audio controls src="trash1.mp3"></audio></div>
+        <div class="track">Graffiti Lungs <audio controls src="trash2.mp3"></audio></div>
+        <div class="track">Ashtray Heart <audio controls src="trash3.mp3"></audio></div>
+        <div class="track">GlitterBug <audio controls src="trash4.mp3"></audio></div>
+        <div class="track">Last Year's Lipstick <audio controls src="trash5.mp3"></audio></div>
+        <div class="track">Half-Hearted Riot <audio controls src="trash6.mp3"></audio></div>
+      </div>
+    </div>
+    <div class="album">
+      <h2>Neon Confessions</h2>
+      <img src="neon-confessions-cover.jpg" onclick="toggleTracks('neonTracks')" alt="Neon Confessions Album Cover">
+      <div id="neonTracks" class="tracks">
+        <div class="track">City of Ashes <audio controls src="neon1.mp3"></audio></div>
+        <div class="track">Dust & Diamonds <audio controls src="neon2.mp3"></audio></div>
+        <div class="track">Love on Mute <audio controls src="neon3.mp3"></audio></div>
+        <div class="track">Sunset Riot <audio controls src="neon4.mp3"></audio></div>
+        <div class="track">Glitter Scar <audio controls src="neon5.mp3"></audio></div>
+        <div class="track">Echo After Midnight <audio controls src="neon6.mp3"></audio></div>
+      </div>
+    </div>
+<div class="album">
+    <h2>Petal Gun</h2>
+<img src="petal-gun-cover.jpg" alt="Petal Gun Album Cover" onclick="toggleTracks('petalGunTracks')" />
+    <div id="petalGunTracks" class="tracks">
+      <div class="track">Safety off (Don't Love Me) <audio controls src="petal1.mp3"></audio></div>
+      <div class="track">Bleed Slow <audio controls src="petal2.mp3"></audio></div>
+      <div class="track">No Safety Word <audio controls src="petal3.mp3"></audio></div>
+      <div class="track">Kickback <audio controls src="petal4.mp3"></audio></div>
+      <div class="track">Petal Gun <audio controls src="petal5.mp3"></audio></div>
+      <div class="track">Kiss the Barrel <audio controls src="petal6.mp3"></audio></div>
+      <div class="track">Pink Chamber <audio controls src="petal7.mp3"></audio></div>
+      <div class="track">Trigger Discipline <audio controls src="petal8.mp3"></audio></div>
+      <div class="track">Exit Wound (I Love You) <audio controls src="petal9.mp3"></audio></div>
+    </div>
+  </div>
+
+  <div class="album">
+    <h2>Sugar Bruise</h2>
+    <img src="sugar-bruise-cover.jpg" alt="Sugar Bruises Album Cover" onclick="toggleTracks('sugarBruisesTracks')" style="cursor:pointer;" />
+    <div id="sugarBruisesTracks" class="tracks" >
+      <div class="track">Candy Cigarettes <audio controls src="sugar1.mp3"></audio></div>
+      <div class="track">Sour Hearts Club <audio controls src="sugar2.mp3"></audio></div>
+      <div class="track">Teethmarks & Lipgloss <audio controls src="sugar3.mp3"></audio></div>
+      <div class="track">Dollhouse Collapse <audio controls src="sugar4.mp3"></audio></div>
+      <div class="track">Maraschino Mourning <audio controls src="sugar5.mp3"></audio></div>
+      <div class="track">Sugar Bruises <audio controls src="sugar6.mp3"></audio></div>
+      <div class="track">Pretty When I Cry <audio controls src="sugar7.mp3"></audio></div>
+      <div class="track">Bubblegum Blades <audio controls src="sugar8.mp3"></audio></div>
+     <div class="track">Pastel Trauma <audio controls src="sugar9.mp3"></audio></div>
+      <div class="track">Cotton Candy Silence <audio controls src="sugar10.mp3"></audio></div>
+      <div class="track">Lullaby for the Bitter Ones <audio controls src="sugar11.mp3"></audio></div>
+  </div>
+    <div class="diary">
+      <h3>Songbook: Violet Riot</h3>
+      <div class="lyric-selector">
+        <button onclick="showLyrics('trash1')">Gum on My Heel</button>
+        <button onclick="showLyrics('neon3')">Love on Mute</button>
+        <button onclick="showLyrics('trash6')">Half-Hearted Riot</button>
+        <button onclick="showLyrics('neon6')">Echo After Midnight</button>
+        <button onclick="showLyrics('trash2')">Graffiti Lungs</button>
+       
+
+     <div class="lyrics-container">
+  <button class="collapse-button" onclick="toggleLyrics()">💕 Collapse Lyrics 💕</button>
+  <div class="lyrics" id="lyricDisplay">
+    Select a song to view its lyrics.
+  </div>
+</div>
+
+  </main>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <script>
+    const cursorGlow = document.getElementById('cursorGlow');
+    window.addEventListener('mousemove', e => {
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
+      sparkle.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1500);
+    });
+    function showInstrument(id) {
+      document.querySelectorAll('.instrument-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function toggleTracks(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle('active');
+    }
+    const lyrics = {
+  trash1: `Gum on My Heel
+
+Verse 1:
+Gum on my heel, slow me down  
+Sticky little keepsake from this restless town  
+Neon flickers paint the past  
+Where love burned bright but couldn’t last  
+
+Chorus:
+I’m stuck like gum on my heel,  
+Ghost of a dream I still feel  
+Running in circles, chasing the thrill,  
+But I’m stuck like gum on my heel  
+Tracing echoes I can’t conceal,
+Clutching scars that never heal,
+Waltzing ghosts I swore weren’t real,
+Still stuck like gum on my heel
+
+Verse 2:
+Whispers hiding in midnight air  
+Old regrets in the clothes I wear  
+Footsteps echo through empty nights  
+Your shadow dances in streetlight fights  
+
+Chorus:
+I’m stuck like gum on my heel,  
+Ghost of a dream I still feel  
+Running in circles, chasing the thrill,  
+But I’m stuck like gum on my heel
+Tracing echoes I can’t conceal,
+Clutching scars that never heal,
+Waltzing ghosts I swore weren’t real,
+Still stuck like gum on my heel  
+
+Bridge:
+Maybe someday I’ll scrape you away,  
+Wash off the nights I begged you to stay  
+But for now, I’m lost in rewind,  
+Sweet little mess in your neon crime  
+
+Final Chorus:
+Still stuck like gum on my heel,  
+Truth too twisted to heal  
+Tried to forget, tried to be real,  
+But I’m stuck like gum on my heel  
+
+Outro:
+Sticky reminders, let them fade,  
+Neon ghosts in a cheap parade  
+I’m moving on, but I still feel—  
+That gum on my heel`,
+      neon3: `Love on Mute — Lyrics
+Verse 1:
+I scream in pink, but your ears catch static
+Every word I whisper turns automatic
+You’re there but you’re not, like a paused refrain
+We're stuck in a loop, but it's not the same
+
+Pre-Chorus:
+I light up the silence, hoping you’ll see
+That even in quiet, I'm begging to be
+
+Chorus:
+I'm loving on mute, fading in sound
+Lost in the static where hearts drown
+You're right beside me, but miles away
+In your silence, I start to fray
+I'm loving on mute, with nothing to say
+
+Verse 2:
+Lips move slow, but the meaning’s gone
+I’ve sung every truth, now I hum along
+We share the bed, but not the air
+I reach for your soul, but there’s nothing there
+
+Pre-Chorus:
+You're turning the volume down on us
+And I can't compete with the quiet you trust
+
+Chorus:
+I'm loving on mute, fading in sound
+Lost in the static where hearts drown
+You're right beside me, but miles away
+In your silence, I start to fray
+I'm loving on mute, with nothing to say
+
+Bridge:
+Maybe I’ll break through with one loud goodbye
+But even my tears can’t amplify
+What we lost between each breath
+A love still living, playing dead
+
+Final Chorus:
+I'm loving on mute, screaming inside
+Muted affection I no longer hide
+You keep the peace while I bleed in prose
+But silence is louder than letting go
+I'm loving on mute—
+And it's time to go
+
+Outro:
+Static love, no volume left
+Just me, just air, and the weight of what's unsaid`,
+trash6: `Half-Hearted Riot
+
+(Verse 1)
+Crack the night with broken glass,
+Silent screams, they never last,
+I’m a flame that’s burning cold,
+Half alive, but still bold.
+
+Staring down the empty streets,
+Fighting battles I can’t beat,
+All these scars beneath my skin,
+Wanna break, but can’t begin.
+
+(Pre-Chorus)
+Can you hear the sound?
+It’s a war without a crowd,
+We’re screaming in disguise,
+Half the truth behind our eyes.
+
+(Chorus)
+Half-hearted riot,
+But the fire’s still inside it,
+I’m tearing up the silence,
+Even when I’m quiet.
+Half-hearted riot,
+Dancing on the wire lit,
+Hold me close or watch me burn,
+I’m the chaos you can’t learn.
+
+(Verse 2)
+Shadows crawling on my skin,
+Half the fight’s a losing grin,
+Every heartbeat’s off the track,
+I’m a storm that’s fading back.
+
+Words like knives, they cut me deep,
+Promises I couldn’t keep,
+Still I’m standing in the rain,
+Half the loss, half the gain.
+
+(Pre-Chorus)
+Can you hear the sound?
+It’s a war without a crowd,
+We’re screaming in disguise,
+Half the truth behind our eyes.
+
+(Chorus)
+Half-hearted riot,
+But the fire’s still inside it,
+I’m tearing up the silence,
+Even when I’m quiet.
+Half-hearted riot,
+Dancing on the wire lit,
+Hold me close or watch me burn,
+I’m the chaos you can’t learn.
+
+(Bridge)
+I’m not broken, just undone,
+Lost the war but not the run,
+Half a riot, half a scream,
+I’m the shadow of your dream.
+
+(Chorus)
+Half-hearted riot,
+But the fire’s still inside it,
+I’m tearing up the silence,
+Even when I’m quiet.
+Half-hearted riot,
+Dancing on the wire lit,
+Hold me close or watch me burn,
+I’m the chaos you can’t learn.
+
+(Outro)
+Half-hearted riot,
+Half-hearted riot,
+Still I fight it—
+Half-hearted riot.`,
+neon6: `  
+Echo After Midnight
+
+Verse 1:  
+I wear my confidence like a neon sign,  
+Flashing loud but it’s just a thin line.  
+Crowds don’t see the cracks behind my smile,  
+I’m running miles, but I’m hiding a while.  
+
+Pre-Chorus:  
+City lights blur, but I’m wide awake,  
+Chasing something only I can take.  
+
+Chorus:  
+There’s an echo after midnight, soft and low,  
+The only voice that I’m scared to show.  
+I’m dancing with my shadows in the glow,  
+Holding on to things nobody knows.  
+
+Verse 2:  
+Words like armor, but they don’t feel real,  
+All the quiet doubts I never reveal.  
+Mirror breaks, but I glue it back tight,  
+Fighting for dreams in the dead of night.  
+
+Pre-Chorus:  
+City lights blur, but I’m wide awake,  
+Chasing something only I can take.  
+
+Chorus:  
+There’s an echo after midnight, soft and low,  
+The only voice that I’m scared to show.  
+I’m dancing with my shadows in the glow,  
+Holding on to things nobody knows.  
+
+Bridge:  
+Maybe one day the morning will find me,  
+Braver than the night that confines me.  
+Till then I’ll keep the echo close,  
+A quiet war only I compose.  
+
+Chorus:  
+There’s an echo after midnight, soft and low,  
+The only voice that I’m scared to show.  
+I’m dancing with my shadows in the glow,  
+Holding on to things nobody knows.  
+`, 
+trash2: `
+Graffiti Lungs
+
+Verse 1:  
+I’m breathing in the city’s poison,  
+Smoke and neon paint my skin.  
+Every drag’s a shot of freedom,  
+Every cough’s a whispered sin.  
+
+Walls bleed colors, cracked and broken,  
+Tagged with stories never told.  
+Ink and ash inside my chest now,  
+A canvas burning cold.  
+
+Pre-Chorus:  
+These lungs wear scars like battle wounds,  
+Every breath a fight I choose.  
+
+Chorus:  
+Graffiti lungs, spitting fire and rain,  
+Colors of pain, tattooed in my veins.  
+Breathing in the chaos, living in the cracks,  
+Ink-stained heart never looking back.  
+
+Verse 2:  
+Midnight screams in faded alleys,  
+Ghosts of dreams that never died.  
+I carry echoes on my shoulders,  
+A riot burning wild inside.  
+
+Ashes fall like shattered glass,  
+Spray paint drips in crimson streams.  
+Every breath a stolen moment,  
+Every cough a broken dream.  
+
+Pre-Chorus:  
+These lungs wear scars like battle wounds,  
+Every breath a fight I choose.  
+
+Chorus:  
+Graffiti lungs, spitting fire and rain,  
+Colors of pain, tattooed in my veins.  
+Breathing in the chaos, living in the cracks,  
+Ink-stained heart never looking back.  
+
+Bridge:  
+Paint the night with shattered hope,  
+Breath by breath, I learn to cope.  
+Through smoke and fire, I remain,  
+A canvas wild, a burning flame.  
+
+Final Chorus:  
+Graffiti lungs, spitting fire and rain,  
+Colors of pain, tattooed in my veins.  
+Breathing in the chaos, living in the cracks,  
+Ink-stained heart never looking back.  
+
+Outro:  
+I wear my wounds like works of art,  
+Graffiti lungs and a reckless heart.`,
+};
+
+    function showLyrics(songId) {
+      document.getElementById('lyricDisplay').textContent = lyrics[songId] || 'Lyrics not found.';
+    }
+    function toggleLyrics() {
+  const display = document.getElementById('lyricDisplay');
+  const button = document.querySelector('.collapse-button');
+
+  if (display.style.display === 'none') {
+    display.style.display = 'block';
+    button.textContent = '💕 Collapse Lyrics 💕';
+  } else {
+    display.style.display = 'none';
+    button.textContent = '💞 Show Lyrics 💞';
+  }
+}
+
+  </script>
+  <footer>
+  <p style="text-align:center; padding:1rem; font-family: 'Quicksand', sans-serif; color: var(--pink-dark); font-size: 0.9rem;">
+    &copy; 2025 Nani Echo. All rights reserved.<br />
+  </p>
+</footer>
+</body>
+</html>
